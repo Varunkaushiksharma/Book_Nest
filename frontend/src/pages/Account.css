@@ -1,0 +1,80 @@
+/* Account.css */
+
+.account-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+}
+
+.account-container h2 {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.account-container button.logout-btn {
+  margin-top: 1rem;
+  padding: 10px 20px;
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.account-container button.logout-btn:hover {
+  background-color: #e04343;
+}
+
+.books-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 2rem;
+}
+
+.books-list li {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.05);
+}
+
+.books-list li strong {
+  font-size: 1.2rem;
+  color: #34495e;
+}
+
+.books-list li em {
+  color: #7f8c8d;
+  font-style: normal;
+  display: block;
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.books-list li p {
+  color: #555;
+  font-size: 0.95rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.books-list li button.delete-btn {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.books-list li button.delete-btn:hover {
+  background-color: #c0392b;
+}
