@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import './Read.css'
+import Navbar from "../component/navbar";
 
 export default function Read() {
   const { id } = useParams();
@@ -32,6 +33,8 @@ export default function Read() {
   if (!book) return <p>Book not found.</p>;
 
   return (
+    <> 
+     <Navbar />
     <div className="read-book-container">
       <h1>{book.name}</h1>
       <h3>By: {book.author}</h3>
@@ -42,5 +45,6 @@ export default function Read() {
       {/* If you have a book content or pdf link, show it here */}
       {/* e.g. <iframe src={book.pdfUrl} width="100%" height="600px" /> */}
     </div>
+    </>
   );
 }

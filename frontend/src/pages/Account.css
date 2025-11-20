@@ -1,80 +1,123 @@
-/* Account.css */
-
-.account-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 1rem 2rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+.account-page {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  padding: 30px;
+  justify-content: center;
+}
+.user-info,
+.book-list {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);        
+  -webkit-backdrop-filter: blur(10px); 
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.account-container h2 {
-  margin-bottom: 1rem;
-  font-weight: 700;
-  color: #2c3e50;
+.user-info {
+  flex: 1;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.book-list {
+  flex: 2;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
 }
 
-.account-container button.logout-btn {
-  margin-top: 1rem;
-  padding: 10px 20px;
-  background-color: #ff4d4d;
-  color: #fff;
+.section-title {
+  font-size: 24px;
+  color: rgb(0, 0, 0);
+  margin-bottom: 10px;
+}
+
+.book-scroll-container {
+  overflow-y: auto;
+  max-height: 500px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-right: 5px;
+}
+
+
+.book-item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.book-item:last-child {
+  border-bottom: none;
+}
+
+.book-actions {
+  margin-top: 5px;
+}
+
+button {
+  margin-right: 10px;
+  padding: 5px 10px;
   border: none;
+  border-radius: 4px;
+  background-color: #0077cc;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
+input, textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
   border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-size: 14px;
+  background: #ffffff;
+}
+.book-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.account-container button.logout-btn:hover {
-  background-color: #e04343;
+.image-preview {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
-.books-list {
-  list-style: none;
-  padding-left: 0;
-  margin-top: 2rem;
+.preview-img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ccc;
 }
 
-.books-list li {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.05);
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.books-list li strong {
-  font-size: 1.2rem;
-  color: #34495e;
+.cancel-btn {
+  background-color: #ff5c5c;
 }
 
-.books-list li em {
-  color: #7f8c8d;
-  font-style: normal;
-  display: block;
-  margin-top: 0.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.books-list li p {
-  color: #555;
-  font-size: 0.95rem;
-  margin: 0 0 0.5rem 0;
-}
-
-.books-list li button.delete-btn {
-  background-color: #e74c3c;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.25s ease;
-}
-
-.books-list li button.delete-btn:hover {
-  background-color: #c0392b;
-}
+.cancel-btn:hover {
+  background-color: #d94848;
+} 

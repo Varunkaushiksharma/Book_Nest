@@ -1,11 +1,17 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.example.demo.repositories.BookRepository;
 import com.example.demo.repositories.UserRepository;
-import com.example.demo.service.UserService;
+// import com.example.demo.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +26,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.entities.Book;
 import com.example.demo.entities.User;
@@ -68,6 +76,10 @@ public ResponseEntity<?> getBookById(@PathVariable int id) {
       bookUpdate.setName(book.getName());
       bookUpdate.setAuthor(book.getAuthor());
       bookUpdate.setSummary(book.getSummary());
+        if (book.getImageUrl() != null && !book.getImageUrl().isEmpty()) {
+            bookUpdate.setImageUrl(book.getImageUrl());
+        }
+
       bookRepository.save(bookUpdate);
       return bookUpdate;
     }
@@ -86,7 +98,7 @@ public ResponseEntity<?> getBookById(@PathVariable int id) {
   }
 @GetMapping("/books/my")
 public ResponseEntity<?> getMyBooks(@AuthenticationPrincipal UserDetails userDetails) {
-    Optional<User> userOpt = userRepository.findByName(userDetails.getUsername());
+    Optional<User> userOpt = userRepository.findByEmail(userDetails.getUsername());
     if (userOpt.isEmpty()) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
     }
@@ -94,6 +106,15 @@ public ResponseEntity<?> getMyBooks(@AuthenticationPrincipal UserDetails userDet
     List<Book> books = bookRepository.findByUser(userOpt.get());
     return ResponseEntity.ok(books);
 }
+
+    @PostMapping("/books/upload")
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        Path path = Paths.get("uploads/" + fileName);
+        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        return ResponseEntity.ok("/uploads/" + fileName);
+    }
+
 
 
 

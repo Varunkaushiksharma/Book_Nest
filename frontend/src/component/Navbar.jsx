@@ -2,6 +2,7 @@ import { NavLink, Link } from "react-router-dom";
 import "./Navbar.css";
 import Button from "./Button";
 import { useEffect, useState } from "react";
+import userpng from "../assets/user.png";
 
 function Navbar() {
   const [isloggedIn, setIsLoggedIn] = useState(false);
@@ -70,11 +71,11 @@ function Navbar() {
 
         {isloggedIn ? (
           <Link to="/account">
-            <Button name="Account" />
+            <img src={userpng} alt="Account" className="user-icon" />
           </Link>
         ) : (
           <Link to="/login">
-            <Button name="Login" />
+            <img src={userpng} alt="Account" className="user-icon" />
           </Link>
         )}
       </ul>

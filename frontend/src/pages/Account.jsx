@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import './Account.css'
+import Button from "../component/Button";
+import BookCard from "../component/BookCard";
+import navbar from "../component/navbar";
 
 export default function Account() {
   const [user, setUser] = useState(null);
@@ -9,7 +12,7 @@ export default function Account() {
 
   // For Add/Edit form
   const [editingBook, setEditingBook] = useState(null);
-  const [formData, setFormData] = useState({ name: "", author: "", summary: "" });
+  const [formData, setFormData] = useState({ name: "", author: "", summary: "" ,imageUrl:""});
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -55,10 +58,17 @@ export default function Account() {
     }).catch(() => alert("Failed to delete book"));
   };
 
-  const startEditBook = (book) => {
-    setEditingBook(book);
-    setFormData({ name: book.name, author: book.author, summary: book.summary });
-  };
+    const startEditBook = (book) => {
+      setEditingBook(book);
+      setFormData({
+        name: book.name || "",
+        author: book.author || "",
+        summary: book.summary || "",
+        imageUrl: book.imageUrl || "",
+        image: null
+      });
+    };
+
 
   const cancelEdit = () => {
     setEditingBook(null);
@@ -69,161 +79,150 @@ export default function Account() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.author) {
-      alert("Name and author are required");
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!formData.name || !formData.author) {
+    alert("Name and author are required");
+    return;
+  }
+
+  let imageUrl = formData.imageUrl;
+
+  // If user selected a file, upload it first
+  if (formData.image) {
+    const imageData = new FormData();
+    imageData.append("file", formData.image);
+
+    try {
+      const uploadRes = await axios.post(
+        "http://localhost:8080/api/books/upload",
+        imageData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      imageUrl = uploadRes.data; // backend returns the URL
+    } catch (err) {
+      console.error(err);
+      alert("Failed to upload image");
       return;
     }
+  }
 
-    if (editingBook) {
-      // Update book
-      axios.put(`http://localhost:8080/api/books/${editingBook.id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(() => {
-        fetchBooks();
-        cancelEdit();
-      }).catch(() => alert("Failed to update book"));
-    } else {
-      // Create book
-      axios.post("http://localhost:8080/api/books", formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(() => {
-        fetchBooks();
-        cancelEdit();
-      }).catch(() => alert("Failed to add book"));
-    }
+  // Now send the book details
+  const bookData = {
+    name: formData.name,
+    author: formData.author,
+    summary: formData.summary,
+    imageUrl: imageUrl || "",
   };
 
-  return (
-    <div style={{ maxWidth: "800px", margin: "2rem auto", padding: "0 1rem" }}>
-      <h2>Welcome, {user?.username || user?.name || "User"}</h2>
-      <button
-        onClick={handleLogout}
-        style={{
-          margin: "1rem 0",
-          backgroundColor: "#ff4d4d",
-          color: "white",
-          padding: "10px 20px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer"
-        }}
-      >
-        Logout
-      </button>
+  try {
+    if (editingBook) {
+      await axios.put(
+        `http://localhost:8080/api/books/${editingBook.id}`,
+        bookData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } else {
+      await axios.post("http://localhost:8080/api/books", bookData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
+    fetchBooks();
+    cancelEdit();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to save book");
+  }
+};
 
-      {/* Book Form */}
-      <div style={{ marginBottom: "2rem" }}>
-        <h3>{editingBook ? "Edit Book" : "Add New Book"}</h3>
-        <form onSubmit={handleSubmit}>
+ return (
+   <>
+  {navbar()}
+  <div className="account-page">
+    {/* LEFT SIDE */}
+    <div className="user-info">
+      <h2>Welcome, {user ? user.username : "User"}</h2>
+      <Button onClick={handleLogout} name="Logout" />
+      <hr />
+      <h3>{editingBook ? "Edit Book" : "Add Book"}</h3>
+      <form onSubmit={handleSubmit} className="book-form">
+          {formData.imageUrl && (
+            <div className="image-preview">
+              <img
+                src={formData.imageUrl}
+                alt="Book preview"
+                className="preview-img"
+              />
+            </div>
+          )}
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.files[0] }))}
+          />
+
           <input
             type="text"
             name="name"
             placeholder="Book Name"
             value={formData.name}
             onChange={handleInputChange}
-            required
-            style={{ display: "block", marginBottom: "0.5rem", width: "100%", padding: "8px" , backgroundColor:"white"}}
           />
+
           <input
             type="text"
             name="author"
             placeholder="Author"
             value={formData.author}
             onChange={handleInputChange}
-            required
-            style={{ display: "block", marginBottom: "0.5rem", width: "100%", padding: "8px" , backgroundColor:"white"}}
           />
+
           <textarea
             name="summary"
             placeholder="Summary"
             value={formData.summary}
             onChange={handleInputChange}
-            style={{ display: "block", marginBottom: "0.5rem", width: "100%", padding: "8px" }}
           />
-          <button
-            type="submit"
-            style={{
-              backgroundColor: "#2ecc71",
-              color: "white",
-              border: "none",
-              padding: "10px 20px",
-              borderRadius: "5px",
-              cursor: "pointer",
-              marginRight: "1rem"
-            }}
-          >
-            {editingBook ? "Update Book" : "Add Book"}
-          </button>
-          {editingBook && (
-            <button
-              type="button"
-              onClick={cancelEdit}
-              style={{
-                backgroundColor: "#95a5a6",
-                color: "white",
-                border: "none",
-                padding: "10px 20px",
-                borderRadius: "5px",
-                cursor: "pointer"
-              }}
-            >
-              Cancel
-            </button>
-          )}
-        </form>
-      </div>
 
-      {/* Books List */}
-      <h3>Your Books</h3>
-      {books.length === 0 ? (
-        <p>No books uploaded yet.</p>
-      ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {books.map(book => (
-            <li
-              key={book.id}
-              style={{
-                backgroundColor: "#f4f4f4",
-                marginBottom: "1rem",
-                padding: "1rem",
-                borderRadius: "8px"
-              }}
-            >
-              <strong>{book.name}</strong> by {book.author}
-              <p>{book.summary}</p>
-              <button
-                onClick={() => startEditBook(book)}
-                style={{
-                  marginRight: "1rem",
-                  padding: "6px 12px",
-                  backgroundColor: "#3498db",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer"
-                }}
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDeleteBook(book.id)}
-                style={{
-                  padding: "6px 12px",
-                  backgroundColor: "#e74c3c",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer"
-                }}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+          <div className="form-buttons">
+            <Button name={editingBook ? "Update" : "Add"} />
+            {editingBook && (
+              <Button
+                type="button"
+                onClick={cancelEdit}
+                name="Cancel"
+                className="cancel-btn"
+              />
+            )}
+          </div>
+        </form>
+
     </div>
-  );
+
+    {/* RIGHT SIDE */}
+   <div className="book-list">
+  <h2 className="section-title">Your Books</h2>
+  <div className="book-scroll-container">
+    {books.map((book) => (
+        <BookCard
+          book={book}
+          onDelete={handleDeleteBook}
+          onEdit={() => startEditBook(book)} 
+          showEditButton
+          showDeleteButton
+        />
+      ))}
+  </div>
+</div>
+
+  </div>
+  </>
+);
+
 }

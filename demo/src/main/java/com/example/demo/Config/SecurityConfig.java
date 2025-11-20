@@ -7,7 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
+// import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,7 +33,7 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity, not recommended for production
         .authorizeHttpRequests(
             auth -> auth
-              .requestMatchers("/home", "/api/books","/signup","/login","/api/users/signup","/api/users/login")
+              .requestMatchers("/home", "/api/books","/signup","/login","/api/users/signup","/api/users/login","/uploads/**")
               .permitAll()
               .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest()
@@ -64,4 +64,6 @@ public AuthenticationProvider authenticationProvider(UserService userService) {
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
     return config.getAuthenticationManager();
   }
+
+  
 }

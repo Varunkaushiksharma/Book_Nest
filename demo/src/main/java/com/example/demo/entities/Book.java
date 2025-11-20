@@ -20,7 +20,7 @@ public class Book {
   private String author;
   @Column(columnDefinition = "TEXT") 
   private String summary;
-  // private String pdfUrl;
+  private String imageUrl;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
@@ -31,11 +31,11 @@ public class Book {
   }
 
   // constructor
-  public Book(String name, String author, String summary) {
+  public Book(String name, String author, String summary,String imageUrl) {
     this.name = name;
     this.author = author;
     this.summary = summary;
-    // this.pdfUrl = pdfUrl;
+    this.imageUrl = imageUrl;
   }
 
   public User getUser() {
@@ -77,6 +77,13 @@ public class Book {
 
   public void setSummary(String summary) {
     this.summary = summary;
+  }
+
+  public String getImageUrl() {
+     return imageUrl; 
+  }
+  public void setImageUrl(String imageUrl) {
+     this.imageUrl = imageUrl; 
   }
 
   // public String getPdfUrl() {

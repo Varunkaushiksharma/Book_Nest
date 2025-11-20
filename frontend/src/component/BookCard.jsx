@@ -7,16 +7,25 @@ export default function BookCard({
   book,
   onAddToLibrary,
   onRemoveFromLibrary,
+  onEdit,
+  onDelete,
   showAddButton = false,
-  showRemoveButton = false
+  showRemoveButton = false,
+  showEditButton = false,
+  showDeleteButton = false
 }) {
   return (
     <div className="book-card">
-      <img
-        src={defaultImage}
+    <img
+        src={
+          book.imageUrl
+            ? `http://localhost:8080/${book.imageUrl.replace(/^\//, "")}`
+            : defaultImage
+        }
         alt={`Cover of ${book.name}`}
         className="book-cover"
       />
+      {console.log("Book image URL:", book.imageUrl)}       
       <div className="book-info">
         <h3 className="book-name">{book.name}</h3>
         <p className="book-author">by {book.author}</p>
@@ -31,7 +40,6 @@ export default function BookCard({
             <button
               className="add-library-btn"
               onClick={() => onAddToLibrary(book.id)}
-              type="button"
             >
               Add to Library
             </button>
@@ -41,9 +49,26 @@ export default function BookCard({
             <button
               className="remove-library-btn"
               onClick={() => onRemoveFromLibrary(book.id)}
-              type="button"
             >
               Remove from Library
+            </button>
+          )}
+
+          {showEditButton && (
+            <button
+              className="edit-btn"
+              onClick={() => onEdit(book.id)}
+            >
+              Edit
+            </button>
+          )}
+
+          {showDeleteButton && (
+            <button
+              className="delete-btn"
+              onClick={() => onDelete(book.id)}
+            >
+              Delete
             </button>
           )}
         </div>
